@@ -8,7 +8,7 @@ plugins {
 android {
     namespace = "com.example.bluetooth_low_energy_example"
     compileSdk = 35
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "27.0.12077973"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
