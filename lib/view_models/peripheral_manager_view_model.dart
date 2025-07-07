@@ -135,6 +135,9 @@ class PeripheralManagerViewModel extends ViewModel {
     await _manager.addService(service);
     final advertisement = Advertisement(
       name: 'FlutterChatApp',
+      serviceUUIDs: [
+        UUID.fromString("f3e3b103-48e6-0678-9fb5-dfacc6401004"),
+      ],
       manufacturerSpecificData: Platform.isIOS || Platform.isMacOS
           ? []
           : [
