@@ -51,12 +51,9 @@ class CentralManagerView extends StatelessWidget {
         ),
       );
     } else if (state == BluetoothLowEnergyState.poweredOn) {
-      // 🔽 Sadece hedef UUID’ye sahip olan cihazları filtrele
+      // 🔽 Sadece adı "MyFlutterChatDevice" olan cihazları filtrele
       final discoveries = viewModel.discoveries.where((discovery) {
-        final serviceUuids = discovery.advertisement.serviceUUIDs;
-        const targetUuid = "00001800-0000-1000-8000-00805f9b34fb";
-        return serviceUuids
-            .any((uuid) => uuid.toString().toLowerCase() == targetUuid);
+        return discovery.advertisement.name == "MyFlutterChatDevice";
       }).toList();
 
       return ListView.separated(
