@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.bluetooth_low_energy_example"
+    namespace = "com.example.bleexample"
     compileSdk = 35
     ndkVersion = "27.0.12077973"
 
