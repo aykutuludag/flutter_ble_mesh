@@ -106,7 +106,7 @@ class PeripheralManagerViewModel extends ViewModel {
     final elements = List.generate(100, (i) => i % 256);
     final value = Uint8List.fromList(elements);
     final service = GATTService(
-      uuid: UUID.short(100),
+      uuid: UUID.fromString("00001800-0000-1000-8000-00805f9b34fb"),
       isPrimary: true,
       includedServices: [],
       characteristics: [
@@ -134,7 +134,7 @@ class PeripheralManagerViewModel extends ViewModel {
     );
     await _manager.addService(service);
     final advertisement = Advertisement(
-      name: Platform.isWindows ? null : 'BLE-12138',
+      name: 'FlutterChatApp',
       manufacturerSpecificData: Platform.isIOS || Platform.isMacOS
           ? []
           : [
