@@ -1,4 +1,4 @@
-package com.example.bluetooth_low_energy_example
+package com.example.bleexample
 
 import io.flutter.embedding.android.FlutterActivity
 
