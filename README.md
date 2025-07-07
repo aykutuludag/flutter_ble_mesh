@@ -1,6 +1,6 @@
 # bluetooth_low_energy_example
 
-Demonstrates how to use the bluetooth_low_energy plugin.
+Demonstrates how to use the bluetooth_low_energy (https://pub.dev/packages/bluetooth_low_energy) plugin.
 
 ## Getting Started
 
