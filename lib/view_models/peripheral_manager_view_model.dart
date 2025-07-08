@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:bluetooth_low_energy/bluetooth_low_energy.dart';
+import 'package:bluetooth_low_energy_example/main.dart';
 import 'package:bluetooth_low_energy_example/models.dart';
 import 'package:clover/clover.dart';
 import 'package:logging/logging.dart';
@@ -106,7 +107,7 @@ class PeripheralManagerViewModel extends ViewModel {
     final elements = List.generate(100, (i) => i % 256);
     final value = Uint8List.fromList(elements);
     final service = GATTService(
-      uuid: UUID.fromString("00001800-0000-1000-8000-00805f9b34fb"),
+      uuid: UUID.fromString(targetUuid),
       isPrimary: true,
       includedServices: [],
       characteristics: [

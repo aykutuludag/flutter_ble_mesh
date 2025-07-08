@@ -7,6 +7,7 @@ import 'package:clover/clover.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../main.dart';
 import 'advertisement_view.dart';
 
 class CentralManagerView extends StatelessWidget {
@@ -51,15 +52,13 @@ class CentralManagerView extends StatelessWidget {
         ),
       );
     } else if (state == BluetoothLowEnergyState.poweredOn) {
-      const targetUuid = "00001800-0000-1000-8000-00805f9b34fb";
-
       final discoveries = viewModel.discoveries.where((discovery) {
         final serviceData = discovery.advertisement.serviceData;
+
         return serviceData.keys.any(
-              (uuid) => uuid.toString().toLowerCase() == targetUuid.toLowerCase(),
+          (uuid) => uuid == UUID.fromString(targetUuid),
         );
       }).toList();
-
 
       return ListView.separated(
         itemBuilder: (context, index) {
