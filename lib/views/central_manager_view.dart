@@ -55,7 +55,7 @@ class CentralManagerView extends StatelessWidget {
       final discoveries = viewModel.discoveries.where((discovery) {
         final serviceUUIDs = discovery.advertisement.serviceUUIDs;
         return serviceUUIDs.any(
-              (uuid) => uuid.toString().toLowerCase() == targetUuid.toLowerCase(),
+          (uuid) => uuid.toString().toLowerCase() == targetUuid.toLowerCase(),
         );
       }).toList();
 
@@ -113,7 +113,7 @@ class CentralManagerView extends StatelessWidget {
       }
     }
     final uuid = discovery.peripheral.uuid;
-    context.go('/central/$uuid');
+    context.push('/chat/$uuid');
   }
 
   void onLongPressDiscovery(

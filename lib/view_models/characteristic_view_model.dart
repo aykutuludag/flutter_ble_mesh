@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:typed_data';
+import 'dart:convert';
 
 import 'package:bluetooth_low_energy/bluetooth_low_energy.dart';
 import 'package:bluetooth_low_energy_example/models.dart';
@@ -19,6 +20,12 @@ class CharacteristicViewModel extends ViewModel {
 
   late final StreamSubscription _characteristicNotifiedSubscription;
 
+  // Yeni: Dışarıya notify değerlerini yaymak için stream controller
+  final StreamController<Uint8List> _valueStreamController = StreamController.broadcast();
+
+  // Yeni: Notify değerlerini dinlemek için public stream
+  Stream<Uint8List> get valueStream => _valueStreamController.stream;
+
   CharacteristicViewModel({
     required CentralManager manager,
     required Peripheral peripheral,
@@ -37,19 +44,28 @@ class CharacteristicViewModel extends ViewModel {
     }
     _characteristicNotifiedSubscription =
         _manager.characteristicNotified.listen((eventArgs) {
-      if (eventArgs.characteristic != _characteristic) {
-        return;
-      }
-      final log = Log(
-        type: 'Notified',
-        message: '[${eventArgs.value.length}] ${eventArgs.value}',
-      );
-      _logs.add(log);
-      notifyListeners();
-    });
+          if (eventArgs.characteristic != _characteristic) {
+            return;
+          }
+          final value = eventArgs.value;
+
+          // Yeni: Gelen notify değerini dışarıya yay
+          _valueStreamController.add(value);
+
+          final log = Log(
+            type: 'Notified',
+            message: '[${value.length}] $value',
+          );
+          _logs.add(log);
+          notifyListeners();
+        });
   }
 
   UUID get uuid => _characteristic.uuid;
+
+  // Yeni: _characteristic dışarı açıldı
+  GATTCharacteristic get characteristic => _characteristic;
+
   bool get canRead =>
       _characteristic.properties.contains(GATTCharacteristicProperty.read);
   bool get canWrite =>
@@ -58,7 +74,7 @@ class CharacteristicViewModel extends ViewModel {
       .contains(GATTCharacteristicProperty.writeWithoutResponse);
   bool get canNotify =>
       _characteristic.properties.contains(GATTCharacteristicProperty.notify) ||
-      _characteristic.properties.contains(GATTCharacteristicProperty.indicate);
+          _characteristic.properties.contains(GATTCharacteristicProperty.indicate);
   List<DescriptorViewModel> get descriptorViewModels => _descriptorViewModels;
   List<Log> get logs => _logs;
   GATTCharacteristicWriteType get writeType => _writeType;
@@ -99,7 +115,7 @@ class CharacteristicViewModel extends ViewModel {
     while (start < value.length) {
       final end = start + fragmentSize;
       final fragmentedValue =
-          end < value.length ? value.sublist(start, end) : value.sublist(start);
+      end < value.length ? value.sublist(start, end) : value.sublist(start);
       final type = writeType;
       await _manager.writeCharacteristic(
         _peripheral,
@@ -137,6 +153,7 @@ class CharacteristicViewModel extends ViewModel {
   @override
   void dispose() {
     _characteristicNotifiedSubscription.cancel();
+    _valueStreamController.close();
     for (var descriptorViewModel in descriptorViewModels) {
       descriptorViewModel.dispose();
     }

@@ -1,4 +1,5 @@
 import 'package:bluetooth_low_energy/bluetooth_low_energy.dart';
+import 'package:bluetooth_low_energy_example/views/chat_screen.dart';
 import 'package:clover/clover.dart';
 import 'package:collection/collection.dart';
 import 'package:go_router/go_router.dart';
@@ -63,6 +64,13 @@ final routerConfig = GoRouter(
                   },
                 ),
               ],
+            ),
+            GoRoute(
+              path: '/chat/:uuid',
+              builder: (context, state) {
+                final uuid = state.pathParameters['uuid']!;
+                return ChatScreen(uuid: uuid);
+              },
             ),
           ],
         ),
