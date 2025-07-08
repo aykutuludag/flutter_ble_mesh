@@ -53,10 +53,9 @@ class CentralManagerView extends StatelessWidget {
       );
     } else if (state == BluetoothLowEnergyState.poweredOn) {
       final discoveries = viewModel.discoveries.where((discovery) {
-        final serviceData = discovery.advertisement.serviceData;
-
-        return serviceData.keys.any(
-          (uuid) => uuid == UUID.fromString(targetUuid),
+        final serviceUUIDs = discovery.advertisement.serviceUUIDs;
+        return serviceUUIDs.any(
+              (uuid) => uuid.toString().toLowerCase() == targetUuid.toLowerCase(),
         );
       }).toList();
 

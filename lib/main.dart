@@ -6,7 +6,7 @@ import 'package:logging/logging.dart';
 
 import 'router_config.dart';
 
-const targetUuid = "00001800-0000-1000-8000-00805f9b34fb";
+const targetUuid = "0000fef3-0000-1000-8000-00805f9b34fb";
 
 void main() {
   runZonedGuarded(onStartUp, onCrashed);

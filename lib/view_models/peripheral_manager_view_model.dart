@@ -92,7 +92,9 @@ class PeripheralManagerViewModel extends ViewModel {
   }
 
   BluetoothLowEnergyState get state => _manager.state;
+
   bool get advertising => _advertising;
+
   List<Log> get logs => _logs;
 
   Future<void> showAppSettings() async {
@@ -104,10 +106,12 @@ class PeripheralManagerViewModel extends ViewModel {
       return;
     }
     await _manager.removeAllServices();
+
     final elements = List.generate(100, (i) => i % 256);
     final value = Uint8List.fromList(elements);
+
     final service = GATTService(
-      uuid: UUID.fromString(targetUuid),
+      uuid: UUID.fromString(targetUuid), // Servis UUID
       isPrimary: true,
       includedServices: [],
       characteristics: [
@@ -133,11 +137,13 @@ class PeripheralManagerViewModel extends ViewModel {
         ),
       ],
     );
+
     await _manager.addService(service);
+
     final advertisement = Advertisement(
       name: 'FlutterChatApp',
       serviceUUIDs: [
-        UUID.fromString("f3e3b103-48e6-0678-9fb5-dfacc6401004"),
+        UUID.fromString(targetUuid), // Servis UUID İLE UYUMLU!
       ],
       manufacturerSpecificData: Platform.isIOS || Platform.isMacOS
           ? []
@@ -148,7 +154,9 @@ class PeripheralManagerViewModel extends ViewModel {
               )
             ],
     );
+
     await _manager.startAdvertising(advertisement);
+
     _advertising = true;
     notifyListeners();
   }
