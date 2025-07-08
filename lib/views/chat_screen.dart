@@ -6,11 +6,17 @@ import 'package:clover/clover.dart';
 import 'package:flutter/material.dart';
 import 'package:bluetooth_low_energy_example/view_models.dart';
 
-
 class ChatScreen extends StatefulWidget {
   final String uuid;
+  final CentralManagerViewModel? centralViewModel;
+  final PeripheralViewModel? peripheralViewModel;
 
-  const ChatScreen({super.key, required this.uuid});
+  const ChatScreen({
+    super.key,
+    required this.uuid,
+    this.centralViewModel,
+    this.peripheralViewModel,
+  });
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -35,23 +41,20 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future<void> _setup() async {
-    final centralViewModel = ViewModel.of<CentralManagerViewModel>(context);
-    final peripheralViewModel = ViewModel.of<PeripheralViewModel>(context);
-
-    if (peripheralViewModel.uuid != widget.uuid) {
+    if (widget.peripheralViewModel?.uuid != widget.uuid) {
       throw Exception('UUID eşleşmedi: ${widget.uuid}');
     }
 
-    _peripheralViewModel = peripheralViewModel;
+    _peripheralViewModel = widget.peripheralViewModel;
 
-    if (!peripheralViewModel.connected) {
-      await peripheralViewModel.connect();
-      await peripheralViewModel.discoverGATT();
+    if (_peripheralViewModel!.connected) {
+      await _peripheralViewModel?.connect();
+      await _peripheralViewModel?.discoverGATT();
     }
 
     // "201" ile biten characteristic'ı bul
     CharacteristicViewModel? chatChar;
-    for (var service in peripheralViewModel.serviceViewModels) {
+    for (var service in _peripheralViewModel!.serviceViewModels) {
       for (var char in service.characteristicViewModels) {
         if (char.uuid.toString().endsWith("201")) {
           chatChar = char;
@@ -110,7 +113,8 @@ class _ChatScreenState extends State<ChatScreen> {
           Expanded(
             child: ListView.builder(
               itemCount: _messages.length,
-              itemBuilder: (_, index) => ListTile(title: Text(_messages[index])),
+              itemBuilder: (_, index) =>
+                  ListTile(title: Text(_messages[index])),
             ),
           ),
           Padding(
@@ -118,7 +122,8 @@ class _ChatScreenState extends State<ChatScreen> {
             child: Row(
               children: [
                 Expanded(child: TextField(controller: _controller)),
-                IconButton(onPressed: _sendMessage, icon: const Icon(Icons.send)),
+                IconButton(
+                    onPressed: _sendMessage, icon: const Icon(Icons.send)),
               ],
             ),
           ),

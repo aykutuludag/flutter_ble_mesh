@@ -103,17 +103,25 @@ class CentralManagerView extends StatelessWidget {
     }
   }
 
-  void onTapDissovery(
-      BuildContext context, DiscoveredEventArgs discovery) async {
-    final viewModel = ViewModel.of<CentralManagerViewModel>(context);
-    if (viewModel.discovering) {
-      await viewModel.stopDiscovery();
-      if (!context.mounted) {
-        return;
-      }
+  void onTapDiscovery(BuildContext context, DiscoveredEventArgs discovery) async {
+    final centralViewModel = ViewModel.of<CentralManagerViewModel>(context);
+    final peripheralViewModel = ViewModel.of<PeripheralViewModel>(context);
+
+    if (centralViewModel.discovering) {
+      await centralViewModel.stopDiscovery();
+      if (!context.mounted) return;
     }
+
     final uuid = discovery.peripheral.uuid;
-    context.push('/chat/$uuid');
+
+    // İkisini bir objede tutup extra ile gönderiyoruz
+    final extraData = {
+      'central': centralViewModel,
+      'peripheral': peripheralViewModel,
+      'uuid': uuid,
+    };
+
+    context.push('/chat/$uuid', extra: extraData);
   }
 
   void onLongPressDiscovery(

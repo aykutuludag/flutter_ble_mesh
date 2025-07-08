@@ -69,7 +69,16 @@ final routerConfig = GoRouter(
               path: '/chat/:uuid',
               builder: (context, state) {
                 final uuid = state.pathParameters['uuid']!;
-                return ChatScreen(uuid: uuid);
+                final extra = state.extra as Map<String, dynamic>?;
+
+                final centralViewModel = extra?['central'] as CentralManagerViewModel?;
+                final peripheralViewModel = extra?['peripheral'] as PeripheralViewModel?;
+
+                return ChatScreen(
+                  uuid: uuid,
+                  centralViewModel: centralViewModel,
+                  peripheralViewModel: peripheralViewModel,
+                );
               },
             ),
           ],
